@@ -24,6 +24,27 @@ AC_ARG_ENABLE(debug,
   esac],[debug=no])
 AM_CONDITIONAL(DEBUG, test x$debug = xtrue)
 
+# Checks for hosts
+case $host_os in
+     freebsd*)
+        AC_DEFINE(TARGET_FREEBSD, 1, running on FreeBSD)
+        arch=freebsd
+        ;;
+     netbsd*)
+        AC_DEFINE(TARGET_NETBSD, 1, running on NetBSD)
+        arch=netbsd
+        ;;
+     darwin*)
+        AC_DEFINE(TARGET_DARWIN, 1, running on Mac OS X)
+        arch=darwin
+        ;;
+     linux*)
+        AC_DEFINE(TARGET_LINUX, 1, running on Linux)
+        arch=linux
+        ;;
+     *) ;;
+esac
+
 # Checks for programs.
 AC_PROG_CC
 AC_PROG_INSTALL

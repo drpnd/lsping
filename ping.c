@@ -35,6 +35,7 @@
 #include <netdb.h>
 #include <poll.h>
 #include <errno.h>
+#include <fcntl.h>
 
 #define BUFFER_SIZE                     65536
 #define ICMP_TYPE_ECHO_REQUEST          8
@@ -458,7 +459,7 @@ _stdin_read(struct slping *slp, FILE *fp)
     }
     r = fgets(buf, BUFFER_SIZE, fp);
     if ( NULL == r ) {
-        return -1;
+        return 0;
     }
     len = strlen(buf);
     /* Trim */
@@ -505,7 +506,7 @@ _stdin_read(struct slping *slp, FILE *fp)
     }
     slp->curseq++;
 
-    return 0;
+    return 1;
 }
 
 /*
@@ -558,7 +559,13 @@ main(int argc, const char *const argv[])
     slp.sock4 = sock4;
     slp.sock6 = sock6;
 
-    /* Set up the linked list */
+    /* Set the stdin to non blocking */
+    int fd;
+    int flags;
+    fd = fileno(fin);
+    flags = fcntl(fd, F_GETFL, 0);
+    flags |= O_NONBLOCK;
+    fcntl(fd, F_SETFL, flags);
 
     for ( ;; ) {
         /* Poll */
@@ -593,10 +600,14 @@ main(int argc, const char *const argv[])
                 fprintf(stderr, "Event error: stdin\n");
                 return EXIT_FAILURE;
             } else if ( fds[0].revents & POLLIN ) {
-                ret = _stdin_read(&slp, fin);
-                if ( -1 == ret ) {
-                    /* EOF read */
-                    return EXIT_SUCCESS;
+                for ( ;; ) {
+                    ret = _stdin_read(&slp, fin);
+                    if ( -1 == ret ) {
+                        /* EOF read */
+                        return EXIT_SUCCESS;
+                    } else if ( 0 == ret ) {
+                        break;
+                    }
                 }
             }
             /* IPv4 */

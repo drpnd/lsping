@@ -630,7 +630,6 @@ main(int argc, const char *const argv[])
         _gc(&slp);
     }
 
-
     return 0;
 }
 

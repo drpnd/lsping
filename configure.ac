@@ -11,6 +11,11 @@ AC_INIT([lsping], [0.1.0], [asai@jar.jp])
 AC_CONFIG_SRCDIR([ping.c])
 AC_CONFIG_HEADER([config.h])
 
+# Get hostname and other information.
+AC_CANONICAL_BUILD
+AC_CANONICAL_HOST
+AC_CANONICAL_TARGET
+
 AM_INIT_AUTOMAKE
 AC_SUBST(SUBDIRS)
 

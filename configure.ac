@@ -53,7 +53,6 @@ esac
 # Checks for programs.
 AC_PROG_CC
 AC_PROG_INSTALL
-#AC_PROG_LIBTOOL
 
 # Checks for libraries.
 
@@ -64,7 +63,6 @@ AC_CHECK_HEADERS([stdlib.h])
 AC_C_CONST
 
 # Checks for library functions.
-#AC_CHECK_FUNCS([])
 
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
